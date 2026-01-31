@@ -2,10 +2,16 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 
 from app.core.database import db
+from app.models.affiliate import AffiliateLinks
+from app.models.product import Product
+from app.models.product_specs import ProductSpecs
+
 
 load_dotenv()
 
 from app.services.ai_service import test_ai
+
+db.Base.metadata.create_all(bind=db.engine)
 
 app = FastAPI()
 
@@ -22,3 +28,7 @@ def db_test():
         "database_url": db.database_url,
         "status": "connected"
     }
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
