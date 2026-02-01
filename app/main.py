@@ -1,13 +1,27 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
+from contextlib import asynccontextmanager
+
 from app.core.database import db
+from app.core.init_db import init_db
+
+
 
 load_dotenv()
 
 from app.services.ai_service import test_ai
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    #startup
+    init_db()
+    yield
+    # shutdown
+
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/test-ia")
 def ai_test():
@@ -22,3 +36,7 @@ def db_test():
         "database_url": db.database_url,
         "status": "connected"
     }
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
