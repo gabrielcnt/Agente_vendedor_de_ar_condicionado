@@ -1,19 +1,27 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
+from contextlib import asynccontextmanager
+
 from app.core.database import db
-from app.models.affiliate import AffiliateLinks
-from app.models.product import Product
-from app.models.product_specs import ProductSpecs
+from app.core.init_db import init_db
+
 
 
 load_dotenv()
 
 from app.services.ai_service import test_ai
 
-db.Base.metadata.create_all(bind=db.engine)
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    #startup
+    init_db()
+    yield
+    # shutdown
+
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/test-ia")
 def ai_test():
