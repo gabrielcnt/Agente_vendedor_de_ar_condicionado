@@ -15,7 +15,7 @@ class Product(db.Base):
     ideal_for = Column(Text, nullable=False)
     selling_points = Column(Text, nullable=False)
     objections = Column(Text, nullable=False)
-    raw_descrption = Column(Text, nullable=False)
+    raw_description = Column(Text, nullable=False)
 
     active = Column(Boolean, default=True)
     specs = relationship("ProductsSpecs", backref="product", uselist=False)    
